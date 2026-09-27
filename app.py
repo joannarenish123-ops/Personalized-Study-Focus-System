@@ -14,13 +14,14 @@ st.write("An AI-driven student productivity tool predicting procrastination risk
 def train_model():
     df = pd.read_csv('study_data.csv')
     df = df.dropna()
+    
+    # Remove Timestamp if present
     if 'Timestamp' in df.columns:
         df = df.drop(columns=['Timestamp'])
     
-    # Encode text columns to numbers
+    # Force convert EVERY column to category codes (numbers)
     for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = df[col].astype('category').cat.codes
+        df[col] = df[col].astype('category').cat.codes
 
     X = df.iloc[:, :-1]
     y = df.iloc[:, -1]
@@ -28,7 +29,6 @@ def train_model():
     model = DecisionTreeClassifier(criterion='entropy', max_depth=4, random_state=42)
     model.fit(X, y)
     return model
-
 model = train_model()
 
 # 2. Interactive Input Form
